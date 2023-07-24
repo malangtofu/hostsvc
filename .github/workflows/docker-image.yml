@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
     - name: 1.Checkout
-      uses: actions/checkout@v2   # @v3 is not available as of my last training data in September, 2021. Please verify the latest version.
+      uses: actions/checkout@v3
 
     - name: 2.Login to DockerHub 
       uses: docker/login-action@v2
@@ -27,20 +27,17 @@ jobs:
       with:
         push: true
         tags: tofudocker/hostservice:${{ github.sha }}
-
   updateYaml:
     runs-on: ubuntu-latest
-    needs: buildImage  # Make sure the buildImage job completes before this job starts
     steps:
       - name: 1.Checkout
-        uses: actions/checkout@v2   # Change from docker/checkout@v3 to actions/checkout@v2
+        uses: docker/checkout@v3
         with:
           repository: 'malangtofu/hostsvc-cd'
-          token : ${{ secrets.GITHAB_TOKEN }}   # Make sure the spelling is GITHUB_TOKEN
-
+          token : ${{ secrets.GITHAB_TOKEN }}
       - name: 2. Change Docker Tag
         run: |
-          sed -i "s|image: tofudocker/node-app:.*|image: tofudocker/node-app:{{ github.sha }}/g" hostservice-deploy.yaml
+          sed -i "s/image: tofudocker\/node-app:.*/images: tofudocker\/node-app:${{ github.sha }}/g" hostservice-deploy.yaml
           git config --global user.email "malangtofu507@gmail.com"
           git config --global user.name "malangtofu"
           git commit -am "triggered by github action"
