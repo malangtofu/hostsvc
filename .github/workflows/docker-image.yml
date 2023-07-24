@@ -40,8 +40,8 @@ jobs:
 
       - name: 2. Change Docker Tag
         run: |
-          sed -i "s|image: tofudocker/node-app:.*|image: tofudocker/node-app:${{ github.sha }}|g" /path/to/your/file   # Add -i to update the file in-place, and specify the file path
-          git config --global user.email "malangtofu507@gmail.com"
-          git config --global user.name "malangtofu"
+          sed -i "s/image: tofudocker\/node-app:.*/images: tofudocker\/node-app:${{ github.sha }}/g" hostservice-deploy.yaml
+          git config --global user.email "dangtong@gmail.com"
+          git config --global user.name "dangtong76"
           git commit -am "triggered by github action"
           git push origin main
